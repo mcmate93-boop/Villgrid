@@ -28,6 +28,26 @@ body{display:flex;flex-direction:column;}
 #info{margin-top:6px;font-size:12px;color:#4a6080;min-height:15px;}
 #map{flex:1;}
 .leaflet-container{background:#07101f !important;}
+
+/* DUPLIKÁLT VÁLASZTÓ */
+#dupsheet{position:fixed;bottom:0;left:0;right:0;z-index:10000;background:#0f1628;border-top:2px solid #f5a623;border-radius:16px 16px 0 0;transform:translateY(100%);transition:transform .25s ease;max-height:60vh;display:flex;flex-direction:column;}
+#dupsheet.on{transform:translateY(0);}
+#dup-h{width:36px;height:4px;background:#1e2d4a;border-radius:2px;margin:9px auto 0;flex-shrink:0;}
+#dup-top{padding:12px 16px;border-bottom:1px solid #1e2d4a;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+#dup-title{font-size:15px;font-weight:800;color:#fff;}
+#dup-sub{font-size:11px;color:#4a6080;margin-top:2px;}
+#dup-x{background:none;border:1px solid #1e2d4a;color:#4a6080;width:30px;height:30px;border-radius:6px;font-size:16px;cursor:pointer;flex-shrink:0;}
+#dup-list{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;}
+.dup-item{padding:14px 16px;border-bottom:1px solid rgba(30,45,74,0.5);cursor:pointer;display:flex;align-items:center;gap:12px;-webkit-tap-highlight-color:transparent;}
+.dup-item:active{background:rgba(245,166,35,0.1);}
+.dup-icon{width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.dup-info{flex:1;}
+.dup-tel{font-size:14px;font-weight:700;color:#fff;}
+.dup-cim{font-size:12px;color:#4a6080;margin-top:2px;}
+.dup-gps{font-size:10px;color:#2a4060;margin-top:2px;font-family:monospace;}
+.dup-arrow{color:#f5a623;font-size:18px;}
+
+/* DETAIL SHEET */
 #sh{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0f1628;border-top:2px solid #f5a623;border-radius:16px 16px 0 0;transform:translateY(100%);transition:transform .25s ease;max-height:65vh;display:flex;flex-direction:column;}
 #sh.on{transform:translateY(0);}
 #sh-h{width:36px;height:4px;background:#1e2d4a;border-radius:2px;margin:9px auto 0;flex-shrink:0;}
@@ -40,10 +60,12 @@ body{display:flex;flex-direction:column;}
 .dk{font-size:11px;color:#4a6080;text-transform:uppercase;}
 .dv{font-size:13px;color:#fff;font-weight:600;text-align:right;word-break:break-word;}
 #sh-nav{margin:10px 16px 24px;padding:13px;background:#f5a623;color:#000;border:none;border-radius:10px;font-size:14px;font-weight:800;width:calc(100% - 32px);cursor:pointer;}
+
 .leaflet-popup-content-wrapper{background:#0f1628 !important;border:1px solid #1e2d4a !important;border-radius:8px !important;}
 .leaflet-popup-tip{background:#0f1628 !important;}
 .pi{font-size:14px;font-weight:800;color:#fff;}
 .ps{font-size:11px;color:#4a6080;margin-top:2px;}
+
 #loader{position:fixed;inset:0;background:#0a0e1a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;}
 #loader h2{color:#f5a623;font-size:22px;font-weight:900;margin-bottom:16px;}
 #lbar{width:200px;height:6px;background:#1e2d4a;border-radius:3px;overflow:hidden;}
@@ -70,6 +92,20 @@ body{display:flex;flex-direction:column;}
 </div>
 <div id="map"></div>
 
+<!-- DUPLIKÁLT VÁLASZTÓ -->
+<div id="dupsheet">
+  <div id="dup-h"></div>
+  <div id="dup-top">
+    <div>
+      <div id="dup-title">Több találat</div>
+      <div id="dup-sub">Válaszd ki a megfelelő transzformátort</div>
+    </div>
+    <button id="dup-x" onclick="closeDup()">✕</button>
+  </div>
+  <div id="dup-list"></div>
+</div>
+
+<!-- DETAIL SHEET -->
 <div id="sh">
   <div id="sh-h"></div>
   <div id="sh-top">
@@ -84,16 +120,13 @@ body{display:flex;flex-direction:column;}
 var D = null;
 var map, ml, mm = {}, filt = null, cur = null;
 
-// Térkép azonnal inicializálva
 map = L.map('map',{center:[47.16,19.5],zoom:7});
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
 ml = L.layerGroup().addTo(map);
 
-// data.js betöltése script tag-gel (legmegbízhatóbb módszer)
 function loadData() {
   document.getElementById('lmsg').textContent = 'Adatok letöltése...';
   document.getElementById('lfill').style.width = '30%';
-  
   var s = document.createElement('script');
   s.src = 'data.js';
   s.onload = function() {
@@ -113,10 +146,8 @@ function init() {
   document.getElementById('si').disabled = false;
   document.getElementById('sb').disabled = false;
   document.getElementById('loader').style.display = 'none';
-  
   map.on('moveend zoomend', draw);
   draw();
-  
   document.getElementById('si').addEventListener('keydown',function(e){
     if(e.key==='Enter'||e.keyCode===13){e.preventDefault();go();}
   });
@@ -142,8 +173,21 @@ function mkr(o,s){
     iconSize:[s,s],iconAnchor:[s/2,s/2]});
   var m=L.marker([o[1],o[2]],{icon:ic})
     .bindPopup('<div class="pi">'+o[0]+'</div><div class="ps">'+o[3]+'</div>',{maxWidth:200})
-    .on('click',function(){open(o[0]);});
-  ml.addLayer(m); mm[o[0]]=m;
+    .on('click',function(){handleMarkerClick(o[0]);});
+  ml.addLayer(m); mm[o[0]+'_'+o[1]+'_'+o[2]]=m;
+}
+
+function handleMarkerClick(aid) {
+  // Megkeressük az összes egyező azonosítót
+  var matches = [];
+  for(var i=0;i<D.length;i++){
+    if(D[i][0]===aid) matches.push(D[i]);
+  }
+  if(matches.length===1){
+    showDetail(matches[0]);
+  } else {
+    showDupSheet(matches);
+  }
 }
 
 function go(){
@@ -151,31 +195,82 @@ function go(){
   var q=document.getElementById('si').value.replace(/\s/g,'').toLowerCase();
   var inf=document.getElementById('info');
   if(!q){filt=null;draw();inf.textContent='';return;}
+
   var r=[];
   for(var i=0;i<D.length;i++){
     var o=D[i];
     if(o[0].toLowerCase().indexOf(q)>=0||o[3].toLowerCase().replace(/\s/g,'').indexOf(q)>=0) r.push(o);
   }
+
   filt=r;
-  inf.textContent='"'+q+'" → '+r.length+' találat'+(r.length===0?' · próbáld rövidebben':'');
   ml.clearLayers(); mm={};
   var show=r.slice(0,400);
   for(var j=0;j<show.length;j++) mkr(show[j],22);
-  if(r.length===1){
-    map.setView([r[0][1],r[0][2]],16);
-    open(r[0][0]);
-    setTimeout(function(){if(mm[r[0][0]])mm[r[0][0]].openPopup();},300);
-  } else if(r.length>1&&r.length<=200){
+
+  // Pontos egyezés keresése (egy azonosítóra)
+  var exactMatches=[];
+  for(var k=0;k<D.length;k++){
+    if(D[k][0].toLowerCase()===q) exactMatches.push(D[k]);
+  }
+
+  if(exactMatches.length===1){
+    inf.textContent='"'+q+'" → 1 találat';
+    map.setView([exactMatches[0][1],exactMatches[0][2]],16);
+    showDetail(exactMatches[0]);
+  } else if(exactMatches.length>1){
+    inf.textContent='"'+q+'" → '+exactMatches.length+' azonos azonosítójú transzformátor';
+    showDupSheet(exactMatches);
+    // Térképen is mutassuk mind
     var g=L.featureGroup(Object.values(mm));
-    if(g.getLayers().length) map.fitBounds(g.getBounds().pad(0.25));
+    if(g.getLayers().length) map.fitBounds(g.getBounds().pad(0.3));
+  } else if(r.length>0){
+    inf.textContent='"'+q+'" → '+r.length+' találat';
+    if(r.length<=200){
+      var g2=L.featureGroup(Object.values(mm));
+      if(g2.getLayers().length) map.fitBounds(g2.getBounds().pad(0.25));
+    }
+  } else {
+    inf.textContent='"'+q+'" → 0 találat · próbáld rövidebben';
   }
 }
 
-function open(id){
-  if(!D) return;
-  var o=null;
-  for(var i=0;i<D.length;i++){if(D[i][0]===id){o=D[i];break;}}
-  if(!o) return;
+// DUPLIKÁLT VÁLASZTÓ
+function showDupSheet(matches) {
+  document.getElementById('dup-title').textContent = matches[0][0] + ' azonosító';
+  document.getElementById('dup-sub').textContent = matches.length + ' transzformátor – válaszd ki a megfelelőt';
+  var html='';
+  for(var i=0;i<matches.length;i++){
+    var o=matches[i];
+    var tel = o[3] || o[4] || '–';
+    var cim = o[3] && o[4] ? o[4] : '';
+    html+='<div class="dup-item" onclick="pickDup('+i+',\''+encodeURIComponent(JSON.stringify(o))+'\')">'  +
+      '<div class="dup-icon">⚡</div>'+
+      '<div class="dup-info">'+
+        '<div class="dup-tel">'+tel+'</div>'+
+        (cim?'<div class="dup-cim">'+cim+'</div>':'')+
+        '<div class="dup-gps">'+o[1].toFixed(4)+', '+o[2].toFixed(4)+'</div>'+
+      '</div>'+
+      '<div class="dup-arrow">›</div>'+
+    '</div>';
+  }
+  document.getElementById('dup-list').innerHTML=html;
+  // Store matches globally for onclick
+  window._dupMatches = matches;
+  document.getElementById('dupsheet').classList.add('on');
+}
+
+function pickDup(idx) {
+  var o = window._dupMatches[idx];
+  closeDup();
+  map.setView([o[1],o[2]],16);
+  showDetail(o);
+}
+
+function closeDup(){
+  document.getElementById('dupsheet').classList.remove('on');
+}
+
+function showDetail(o){
   cur=o;
   document.getElementById('sh-id').textContent=o[0];
   var h='';
@@ -195,8 +290,9 @@ function nav(){if(!cur)return;window.open('https://maps.apple.com/?daddr='+cur[1
 var ty=0;
 document.getElementById('sh').addEventListener('touchstart',function(e){ty=e.touches[0].clientY;},{passive:true});
 document.getElementById('sh').addEventListener('touchend',function(e){if(e.changedTouches[0].clientY-ty>60)cls();},{passive:true});
+document.getElementById('dupsheet').addEventListener('touchstart',function(e){ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('dupsheet').addEventListener('touchend',function(e){if(e.changedTouches[0].clientY-ty>60)closeDup();},{passive:true});
 
-// Indítás
 loadData();
 </script>
 </body>
