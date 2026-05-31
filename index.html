@@ -113,7 +113,7 @@ body{display:flex;flex-direction:column;}
     <button id="sh-x" onclick="cls()">✕</button>
   </div>
   <div id="sh-body"></div>
-  <button id="sh-nav" onclick="nav()">📍 Navigálás Apple Maps-ben</button>
+  <button id="sh-nav" onclick="nav()">📍 Navigálás Google Maps-ben</button>
 </div>
 
 <script>
@@ -285,7 +285,7 @@ function showDetail(o){
 
 function dr(k,v){return '<div class="dr"><span class="dk">'+k+'</span><span class="dv">'+v+'</span></div>';}
 function cls(){document.getElementById('sh').classList.remove('on');cur=null;}
-function nav(){if(!cur)return;window.open('https://maps.apple.com/?daddr='+cur[1]+','+cur[2],'_blank');}
+function nav(){if(!cur)return;window.open('https://www.google.com/maps/dir/?api=1&destination='+cur[1]+','+cur[2],'_blank');}
 
 var ty=0;
 document.getElementById('sh').addEventListener('touchstart',function(e){ty=e.touches[0].clientY;},{passive:true});
