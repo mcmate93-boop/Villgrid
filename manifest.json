@@ -2,7 +2,7 @@
   "name": "VillGrid – Transzformátor Térkép",
   "short_name": "VillGrid",
   "description": "Villamos hálózat objektumok térképe",
-  "start_url": "/",
+  "start_url": "/Villgrid/",
   "display": "standalone",
   "background_color": "#0a0e1a",
   "theme_color": "#f5a623",
