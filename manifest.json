@@ -2,20 +2,21 @@
   "name": "VillGrid – Transzformátor Térkép",
   "short_name": "VillGrid",
   "description": "Villamos hálózat objektumok térképe",
-  "start_url": "/Villgrid/",
+  "start_url": "/Villgrid/index.html",
+  "scope": "/Villgrid/",
   "display": "standalone",
   "background_color": "#0a0e1a",
   "theme_color": "#f5a623",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/Villgrid/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "/Villgrid/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
