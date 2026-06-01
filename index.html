@@ -120,6 +120,25 @@ body{display:flex;flex-direction:column;}
 var D = null;
 var map, ml, mm = {}, filt = null, cur = null;
 
+// Service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/Villgrid/sw.js');
+  });
+}
+
+// Online/offline jelző
+window.addEventListener('online',  function() {
+  var s = document.getElementById('status');
+  s.style.color = '#4a6080';
+  s.textContent = D ? D.length.toLocaleString('hu') + ' db betöltve' : 'Online';
+});
+window.addEventListener('offline', function() {
+  var s = document.getElementById('status');
+  s.style.color = '#ffc107';
+  s.textContent = '📵 Offline – utolsó mentett adatok';
+});
+
 map = L.map('map',{center:[47.16,19.5],zoom:7});
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
 ml = L.layerGroup().addTo(map);
