@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VillGrid – Telepítési útmutató</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    padding: 20px;
+  }
+
+  .page {
+    background: #fff;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  /* FEJLÉC */
+  .header {
+    background: #0a0e1a;
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-logo { font-size: 28px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+  .header-logo span { color: #f5a623; }
+  .header-sub { font-size: 13px; color: #4a6080; margin-top: 3px; }
+  .header-badge {
+    background: rgba(245,166,35,0.15);
+    border: 1px solid rgba(245,166,35,0.4);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: #f5a623;
+    font-weight: 700;
+  }
+  .orange-bar { height: 4px; background: #f5a623; }
+
+  /* QR SZEKCIÓ */
+  .qr-section {
+    background: #fff9f0;
+    border-bottom: 2px solid #f5a623;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .qr-box {
+    background: #fff;
+    border: 3px solid #f5a623;
+    border-radius: 12px;
+    padding: 10px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .qr-label { font-size: 10px; color: #888; margin-top: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .qr-right h2 { font-size: 18px; font-weight: 900; color: #0a0e1a; margin-bottom: 7px; }
+  .qr-right p { font-size: 12px; color: #444; line-height: 1.6; margin-bottom: 7px; }
+  .url-box {
+    background: #0a0e1a;
+    color: #f5a623;
+    font-family: monospace;
+    font-size: 11px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  /* LÉPÉSEK */
+  .steps-wrap { padding: 16px 32px; }
+
+  .os-block { margin-bottom: 16px; }
+  .os-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 900;
+  }
+  .ios-title { background: #000; color: #fff; }
+  .android-title { background: #3ddc84; color: #000; }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 7px;
+    border-left: 4px solid #f5a623;
+  }
+  .snum {
+    width: 26px; height: 26px;
+    background: #f5a623; color: #000;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900;
+    flex-shrink: 0;
+  }
+  .sinfo { flex: 1; }
+  .stitle { font-size: 13px; font-weight: 700; color: #0a0e1a; margin-bottom: 2px; }
+  .sdesc { font-size: 11px; color: #555; line-height: 1.5; }
+  .sdesc b { color: #0a0e1a; }
+  .semoji { font-size: 20px; flex-shrink: 0; width: 26px; text-align: center; }
+
+  /* TIPP */
+  .tip {
+    margin: 0 32px 16px;
+    background: #e8f4fd;
+    border: 1px solid #b3d9f5;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 11px;
+    color: #1a5276;
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: #0a0e1a;
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-left { font-size: 11px; color: #4a6080; }
+  .footer-left span { color: #f5a623; font-weight: 700; }
+  .print-btn {
+    background: #f5a623;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .print-btn:hover { background: #ffb84d; }
+
+  /* NYOMTATÁSI STÍLUSOK */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page { box-shadow: none; width: 100%; }
+    .print-btn { display: none !important; }
+    .footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .os-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .qr-section { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .step { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .tip { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="header-logo">⚡ Vill<span>Grid</span></div>
+      <div class="header-sub">Transzformátor térkép – Telepítési útmutató</div>
+    </div>
+    <div class="header-badge">Belső használatra</div>
+  </div>
+  <div class="orange-bar"></div>
+
+  <div class="qr-section">
+    <div class="qr-box">
+      <canvas id="qr"></canvas>
+      <div class="qr-label">📷 Olvasd le!</div>
+    </div>
+    <div class="qr-right">
+      <h2>📱 Olvasd le a QR kódot!</h2>
+      <p>Fogd a telefonod és a <b>kamera apppal</b> olvasd le a QR kódot – azonnal megnyílik az alkalmazás. Nem kell semmit beírni!</p>
+      <p>Vagy írd be ezt a böngészőbe:</p>
+      <div class="url-box">mcmate93-boop.github.io/Villgrid/index.html</div>
+    </div>
+  </div>
+
+  <div class="steps-wrap">
+
+    <div class="os-block">
+      <div class="os-title ios-title">🍎 &nbsp;iPhone (iOS) – Safari böngészővel</div>
+      <div class="step"><div class="snum">1</div><div class="sinfo"><div class="stitle">Olvasd le a QR kódot kamerával</div><div class="sdesc">Nyisd meg a <b>Kamera</b> appot, tartsd a QR kód fölé. Megjelenik egy sárga felirat – koppints rá! <b>Safari</b>-ban nyílik meg.</div></div><div class="semoji">📷</div></div>
+      <div class="step"><div class="snum">2</div><div class="sinfo"><div class="stitle">Koppints a megosztás gombra</div><div class="sdesc">Az oldal alján középen van egy <b>négyzet felfelé mutató nyíllal</b> ikon – koppints rá!</div></div><div class="semoji">⬆️</div></div>
+      <div class="step"><div class="snum">3</div><div class="sinfo"><div class="stitle">„Főképernyőhöz adás"</div><div class="sdesc">Görgess le és koppints a <b>„Főképernyőhöz adás"</b> gombra, majd jobb felül a <b>„Hozzáadás"</b> gombra.</div></div><div class="semoji">➕</div></div>
+      <div class="step"><div class="snum">4</div><div class="sinfo"><div class="stitle">Kész! A VillGrid ikon megjelenik a főképernyőn</div><div class="sdesc">Mostantól úgy nyitható meg mint egy rendes alkalmazás!</div></div><div class="semoji">🎉</div></div>
+    </div>
+
+    <div class="os-block">
+      <div class="os-title android-title">🤖 &nbsp;Android – Chrome böngészővel</div>
+      <div class="step"><div class="snum">1</div><div class="sinfo"><div class="stitle">Olvasd le a QR kódot kamerával</div><div class="sdesc">Nyisd meg a <b>Kamera</b> appot, tartsd a QR kód fölé. Koppints a megjelenő linkre – <b>Chrome</b>-ban nyílik meg.</div></div><div class="semoji">📷</div></div>
+      <div class="step"><div class="snum">2</div><div class="sinfo"><div class="stitle">Koppints a három pontra</div><div class="sdesc">A jobb felső sarokban lévő <b>három pontra (⋮)</b> koppints.</div></div><div class="semoji">⋮</div></div>
+      <div class="step"><div class="snum">3</div><div class="sinfo"><div class="stitle">„Hozzáadás a kezdőképernyőhöz"</div><div class="sdesc">Válaszd a <b>„Hozzáadás a kezdőképernyőhöz"</b> lehetőséget, majd erősítsd meg.</div></div><div class="semoji">➕</div></div>
+      <div class="step"><div class="snum">4</div><div class="sinfo"><div class="stitle">Kész! A VillGrid ikon megjelenik a kezdőképernyőn</div><div class="sdesc">Koppints rá és indul az alkalmazás!</div></div><div class="semoji">🎉</div></div>
+    </div>
+
+  </div>
+
+  <div class="tip">💡 <b>Fontos:</b> Az alkalmazás használatához internetkapcsolat szükséges. A térkép és az adatok online töltődnek be.</div>
+
+  <div class="footer">
+    <div class="footer-left"><span>VillGrid</span> – Villamos hálózat térkép</div>
+    <button class="print-btn" onclick="window.print()">🖨️ Nyomtatás</button>
+  </div>
+
+</div>
+
+<script>
+QRCode.toCanvas(
+  document.getElementById('qr'),
+  'https://mcmate93-boop.github.io/Villgrid/index.html',
+  { width: 180, margin: 2, color: { dark: '#000000', light: '#ffffff' } }
+);
+</script>
+</body>
+</html>
