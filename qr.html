@@ -4,172 +4,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VillGrid – Telepítési útmutató</title>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: Arial, sans-serif;
-    background: #f0f0f0;
-    padding: 20px;
-  }
-
-  .page {
-    background: #fff;
-    width: 210mm;
-    min-height: 297mm;
-    margin: 0 auto;
-    padding: 0;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  }
-
-  /* FEJLÉC */
-  .header {
-    background: #0a0e1a;
-    padding: 22px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .header-logo { font-size: 28px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+  body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+  .page { background: #fff; width: 210mm; min-height: 297mm; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+  .header { background: #0a0e1a; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .header-logo { font-size: 26px; font-weight: 900; color: #fff; }
   .header-logo span { color: #f5a623; }
-  .header-sub { font-size: 13px; color: #4a6080; margin-top: 3px; }
-  .header-badge {
-    background: rgba(245,166,35,0.15);
-    border: 1px solid rgba(245,166,35,0.4);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 12px;
-    color: #f5a623;
-    font-weight: 700;
-  }
+  .header-sub { font-size: 12px; color: #4a6080; margin-top: 3px; }
+  .header-badge { background: rgba(245,166,35,0.15); border: 1px solid rgba(245,166,35,0.4); border-radius: 20px; padding: 5px 12px; font-size: 11px; color: #f5a623; font-weight: 700; }
   .orange-bar { height: 4px; background: #f5a623; }
-
-  /* QR SZEKCIÓ */
-  .qr-section {
-    background: #fff9f0;
-    border-bottom: 2px solid #f5a623;
-    padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-  }
-  .qr-box {
-    background: #fff;
-    border: 3px solid #f5a623;
-    border-radius: 12px;
-    padding: 10px;
-    flex-shrink: 0;
-    text-align: center;
-  }
-  .qr-label { font-size: 10px; color: #888; margin-top: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-  .qr-right h2 { font-size: 18px; font-weight: 900; color: #0a0e1a; margin-bottom: 7px; }
+  .qr-section { background: #fff9f0; border-bottom: 2px solid #f5a623; padding: 18px 32px; display: flex; align-items: center; gap: 20px; }
+  .qr-box { background: #fff; border: 3px solid #f5a623; border-radius: 12px; padding: 8px; flex-shrink: 0; text-align: center; }
+  .qr-label { font-size: 10px; color: #888; margin-top: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .qr-right h2 { font-size: 17px; font-weight: 900; color: #0a0e1a; margin-bottom: 7px; }
   .qr-right p { font-size: 12px; color: #444; line-height: 1.6; margin-bottom: 7px; }
-  .url-box {
-    background: #0a0e1a;
-    color: #f5a623;
-    font-family: monospace;
-    font-size: 11px;
-    padding: 7px 12px;
-    border-radius: 6px;
-    display: inline-block;
-  }
-
-  /* LÉPÉSEK */
-  .steps-wrap { padding: 16px 32px; }
-
-  .os-block { margin-bottom: 16px; }
-  .os-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    font-size: 16px;
-    font-weight: 900;
-  }
+  .url-box { background: #0a0e1a; color: #f5a623; font-family: monospace; font-size: 11px; padding: 7px 12px; border-radius: 6px; display: inline-block; }
+  .steps-wrap { padding: 14px 32px; }
+  .os-block { margin-bottom: 14px; }
+  .os-title { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 15px; font-weight: 900; }
   .ios-title { background: #000; color: #fff; }
   .android-title { background: #3ddc84; color: #000; }
-
-  .step {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 7px;
-    border-left: 4px solid #f5a623;
-  }
-  .snum {
-    width: 26px; height: 26px;
-    background: #f5a623; color: #000;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 900;
-    flex-shrink: 0;
-  }
+  .step { display: flex; align-items: flex-start; gap: 10px; background: #f9f9f9; border-radius: 8px; padding: 9px 11px; margin-bottom: 6px; border-left: 4px solid #f5a623; }
+  .snum { width: 24px; height: 24px; background: #f5a623; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; flex-shrink: 0; }
   .sinfo { flex: 1; }
-  .stitle { font-size: 13px; font-weight: 700; color: #0a0e1a; margin-bottom: 2px; }
-  .sdesc { font-size: 11px; color: #555; line-height: 1.5; }
+  .stitle { font-size: 12px; font-weight: 700; color: #0a0e1a; margin-bottom: 2px; }
+  .sdesc { font-size: 11px; color: #555; line-height: 1.4; }
   .sdesc b { color: #0a0e1a; }
-  .semoji { font-size: 20px; flex-shrink: 0; width: 26px; text-align: center; }
-
-  /* TIPP */
-  .tip {
-    margin: 0 32px 16px;
-    background: #e8f4fd;
-    border: 1px solid #b3d9f5;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 11px;
-    color: #1a5276;
-    line-height: 1.6;
-  }
-
-  /* FOOTER */
-  .footer {
-    background: #0a0e1a;
-    padding: 12px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  .semoji { font-size: 18px; flex-shrink: 0; width: 24px; text-align: center; }
+  .tip { margin: 0 32px 14px; background: #e8f4fd; border: 1px solid #b3d9f5; border-radius: 8px; padding: 9px 14px; font-size: 11px; color: #1a5276; line-height: 1.6; }
+  .footer { background: #0a0e1a; padding: 11px 32px; display: flex; align-items: center; justify-content: space-between; }
   .footer-left { font-size: 11px; color: #4a6080; }
   .footer-left span { color: #f5a623; font-weight: 700; }
-  .print-btn {
-    background: #f5a623;
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    padding: 7px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .print-btn:hover { background: #ffb84d; }
-
-  /* NYOMTATÁSI STÍLUSOK */
+  .print-btn { background: #f5a623; color: #000; border: none; border-radius: 6px; padding: 7px 16px; font-size: 12px; font-weight: 700; cursor: pointer; }
   @media print {
     body { background: #fff; padding: 0; }
     .page { box-shadow: none; width: 100%; }
     .print-btn { display: none !important; }
-    .footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .os-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .qr-section { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .step { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .tip { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   }
 </style>
 </head>
 <body>
 <div class="page">
-
   <div class="header">
     <div>
       <div class="header-logo">⚡ Vill<span>Grid</span></div>
@@ -181,7 +58,7 @@
 
   <div class="qr-section">
     <div class="qr-box">
-      <canvas id="qr"></canvas>
+      <canvas id="qr" width="180" height="180"></canvas>
       <div class="qr-label">📷 Olvasd le!</div>
     </div>
     <div class="qr-right">
@@ -193,23 +70,20 @@
   </div>
 
   <div class="steps-wrap">
-
     <div class="os-block">
       <div class="os-title ios-title">🍎 &nbsp;iPhone (iOS) – Safari böngészővel</div>
       <div class="step"><div class="snum">1</div><div class="sinfo"><div class="stitle">Olvasd le a QR kódot kamerával</div><div class="sdesc">Nyisd meg a <b>Kamera</b> appot, tartsd a QR kód fölé. Megjelenik egy sárga felirat – koppints rá! <b>Safari</b>-ban nyílik meg.</div></div><div class="semoji">📷</div></div>
-      <div class="step"><div class="snum">2</div><div class="sinfo"><div class="stitle">Koppints a megosztás gombra</div><div class="sdesc">Az oldal alján középen van egy <b>négyzet felfelé mutató nyíllal</b> ikon – koppints rá!</div></div><div class="semoji">⬆️</div></div>
+      <div class="step"><div class="snum">2</div><div class="sinfo"><div class="stitle">Koppints a megosztás gombra</div><div class="sdesc">Az oldal alján középen lévő <b>négyzet felfelé mutató nyíllal</b> ikonra koppints!</div></div><div class="semoji">⬆️</div></div>
       <div class="step"><div class="snum">3</div><div class="sinfo"><div class="stitle">„Főképernyőhöz adás"</div><div class="sdesc">Görgess le és koppints a <b>„Főképernyőhöz adás"</b> gombra, majd jobb felül a <b>„Hozzáadás"</b> gombra.</div></div><div class="semoji">➕</div></div>
-      <div class="step"><div class="snum">4</div><div class="sinfo"><div class="stitle">Kész! A VillGrid ikon megjelenik a főképernyőn</div><div class="sdesc">Mostantól úgy nyitható meg mint egy rendes alkalmazás!</div></div><div class="semoji">🎉</div></div>
+      <div class="step"><div class="snum">4</div><div class="sinfo"><div class="stitle">Kész! ⚡</div><div class="sdesc">A <b>VillGrid ikon</b> megjelenik a főképernyőn – úgy nyitható meg mint egy rendes app!</div></div><div class="semoji">🎉</div></div>
     </div>
-
     <div class="os-block">
       <div class="os-title android-title">🤖 &nbsp;Android – Chrome böngészővel</div>
       <div class="step"><div class="snum">1</div><div class="sinfo"><div class="stitle">Olvasd le a QR kódot kamerával</div><div class="sdesc">Nyisd meg a <b>Kamera</b> appot, tartsd a QR kód fölé. Koppints a megjelenő linkre – <b>Chrome</b>-ban nyílik meg.</div></div><div class="semoji">📷</div></div>
       <div class="step"><div class="snum">2</div><div class="sinfo"><div class="stitle">Koppints a három pontra</div><div class="sdesc">A jobb felső sarokban lévő <b>három pontra (⋮)</b> koppints.</div></div><div class="semoji">⋮</div></div>
       <div class="step"><div class="snum">3</div><div class="sinfo"><div class="stitle">„Hozzáadás a kezdőképernyőhöz"</div><div class="sdesc">Válaszd a <b>„Hozzáadás a kezdőképernyőhöz"</b> lehetőséget, majd erősítsd meg.</div></div><div class="semoji">➕</div></div>
-      <div class="step"><div class="snum">4</div><div class="sinfo"><div class="stitle">Kész! A VillGrid ikon megjelenik a kezdőképernyőn</div><div class="sdesc">Koppints rá és indul az alkalmazás!</div></div><div class="semoji">🎉</div></div>
+      <div class="step"><div class="snum">4</div><div class="sinfo"><div class="stitle">Kész! ⚡</div><div class="sdesc">A <b>VillGrid ikon</b> megjelenik a kezdőképernyőn – koppints rá és indul az app!</div></div><div class="semoji">🎉</div></div>
     </div>
-
   </div>
 
   <div class="tip">💡 <b>Fontos:</b> Az alkalmazás használatához internetkapcsolat szükséges. A térkép és az adatok online töltődnek be.</div>
@@ -218,15 +92,193 @@
     <div class="footer-left"><span>VillGrid</span> – Villamos hálózat térkép</div>
     <button class="print-btn" onclick="window.print()">🖨️ Nyomtatás</button>
   </div>
-
 </div>
 
 <script>
-QRCode.toCanvas(
-  document.getElementById('qr'),
-  'https://mcmate93-boop.github.io/Villgrid/index.html',
-  { width: 180, margin: 2, color: { dark: '#000000', light: '#ffffff' } }
-);
+
+// Minimális QR kód generátor - pure JavaScript, CDN nélkül
+// Forrás: Nayuki QR Code generator alapján (MIT licenc)
+
+var QRGen = (function() {
+  function generateMatrix(text) {
+    var bytes = [];
+    for (var i = 0; i < text.length; i++) bytes.push(text.charCodeAt(i) & 0xFF);
+    
+    // Version 4, ECC L
+    var version = 4, size = 33;
+    var dataCapacity = 64, ecCount = 20;
+    
+    // Encode: mode(4) + length(8) + data bits + terminator + padding
+    var bits = [];
+    // Byte mode: 0100
+    bits.push(0,1,0,0);
+    // Length
+    var n = bytes.length;
+    for (var b = 7; b >= 0; b--) bits.push((n >> b) & 1);
+    // Data
+    for (var i = 0; i < bytes.length; i++)
+      for (var b = 7; b >= 0; b--) bits.push((bytes[i] >> b) & 1);
+    // Terminator
+    for (var i = 0; i < 4 && bits.length < dataCapacity*8; i++) bits.push(0);
+    while (bits.length % 8) bits.push(0);
+    // Padding codewords
+    var pads = [0xEC, 0x11], pi = 0;
+    while (bits.length < dataCapacity*8) {
+      var p = pads[pi++ % 2];
+      for (var b = 7; b >= 0; b--) bits.push((p >> b) & 1);
+    }
+    
+    // To codewords
+    var cw = [];
+    for (var i = 0; i < dataCapacity; i++) {
+      var v = 0;
+      for (var b = 0; b < 8; b++) v = (v << 1) | bits[i*8+b];
+      cw.push(v);
+    }
+    
+    // Reed-Solomon
+    var exp = new Array(512), log = new Array(256);
+    var x = 1;
+    for (var i = 0; i < 255; i++) {
+      exp[i] = x; log[x] = i;
+      x = (x << 1) ^ (x & 0x80 ? 0x11d : 0);
+    }
+    for (var i = 255; i < 512; i++) exp[i] = exp[i-255];
+    
+    function gfMul(a,b) { return (!a||!b)?0:exp[log[a]+log[b]]; }
+    function gfPolyMul(p,q) {
+      var r = new Array(p.length+q.length-1).fill(0);
+      for (var i=0;i<p.length;i++) for (var j=0;j<q.length;j++) r[i+j]^=gfMul(p[i],q[j]);
+      return r;
+    }
+    var gen = [1];
+    for (var i=0;i<ecCount;i++) gen = gfPolyMul(gen,[1,exp[i]]);
+    
+    var enc = cw.concat(new Array(ecCount).fill(0));
+    for (var i=0;i<dataCapacity;i++) {
+      var c = enc[i];
+      if (c) for (var j=0;j<gen.length;j++) enc[i+j]^=gfMul(gen[j],c);
+    }
+    var fullCW = cw.concat(enc.slice(dataCapacity));
+    
+    // Build matrix
+    var m = [];
+    for (var i=0;i<size;i++) { m.push([]); for (var j=0;j<size;j++) m[i].push(null); }
+    
+    function setFinder(r,c) {
+      for (var dr=0;dr<7;dr++) for (var dc=0;dc<7;dc++) {
+        var outer=(dr==0||dr==6||dc==0||dc==6), inner=(dr>=2&&dr<=4&&dc>=2&&dc<=4);
+        m[r+dr][c+dc]=(outer||inner)?1:0;
+      }
+    }
+    setFinder(0,0); setFinder(0,size-7); setFinder(size-7,0);
+    
+    // Separators
+    for (var i=0;i<8;i++) {
+      var positions=[[7,i],[i,7],[size-8,i],[i,size-8],[7,size-1-i],[size-1-i,7]];
+      for (var p=0;p<positions.length;p++) {
+        var r=positions[p][0],c=positions[p][1];
+        if (r>=0&&r<size&&c>=0&&c<size&&m[r][c]===null) m[r][c]=0;
+      }
+    }
+    
+    // Timing
+    for (var i=8;i<size-8;i++) {
+      if (m[6][i]===null) m[6][i]=i%2==0?1:0;
+      if (m[i][6]===null) m[i][6]=i%2==0?1:0;
+    }
+    
+    // Alignment (version 4: at 26,26)
+    for (var dr=-2;dr<=2;dr++) for (var dc=-2;dc<=2;dc++) {
+      if (m[26+dr][26+dc]===null) {
+        var outer=(Math.abs(dr)==2||Math.abs(dc)==2), center=(dr==0&&dc==0);
+        m[26+dr][26+dc]=(outer||center)?1:0;
+      }
+    }
+    
+    // Dark module
+    m[4*version+9][8]=1;
+    
+    // Format info (ECC L=01, mask 0)
+    var fmtData=0b01<<3|0, rem=fmtData<<10;
+    for (var i=4;i>=0;i--) if (rem&(1<<(i+10))) rem^=0x537<<i;
+    var fmt=((fmtData<<10)|rem)^0x5412;
+    var fbits=[];
+    for (var i=14;i>=0;i--) fbits.push((fmt>>i)&1);
+    var fp1=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
+    var fp2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
+    for (var i=0;i<15;i++) { m[fp1[i][0]][fp1[i][1]]=fbits[i]; m[fp2[i][0]][fp2[i][1]]=fbits[i]; }
+    
+    // Data placement
+    var dataBits=[];
+    for (var i=0;i<fullCW.length;i++) for (var b=7;b>=0;b--) dataBits.push((fullCW[i]>>b)&1);
+    
+    var bi=0, up=true, col=size-1;
+    while (col>=0) {
+      if (col==6) col--;
+      var rows=up?Array.from({length:size},(_,i)=>size-1-i):Array.from({length:size},(_,i)=>i);
+      for (var ri=0;ri<rows.length;ri++) {
+        var r=rows[ri];
+        for (var ci=0;ci<2;ci++) {
+          var c=col-ci;
+          if (c>=0&&m[r][c]===null) {
+            m[r][c]=bi<dataBits.length?dataBits[bi++]:0;
+          }
+        }
+      }
+      up=!up; col-=2;
+    }
+    
+    // Mask 0: (r+c)%2==0
+    var masked=m.map(function(row){return row.slice();});
+    for (var r=0;r<size;r++) for (var c=0;c<size;c++) {
+      if (m[r][c]!==null&&m[r][c]!==undefined) {
+        // check if data module
+        var isFunc=false;
+        // finder areas
+        if ((r<9&&c<9)||(r<9&&c>=size-8)||(r>=size-8&&c<9)) isFunc=true;
+        // timing
+        if (r==6||c==6) isFunc=true;
+        // alignment
+        if (r>=24&&r<=28&&c>=24&&c<=28) isFunc=true;
+        // format
+        if (r==8&&c<=8) isFunc=true;
+        if (c==8&&r<=8) isFunc=true;
+        if (r==8&&c>=size-8) isFunc=true;
+        if (c==8&&r>=size-8) isFunc=true;
+        // dark module
+        if (r==4*version+9&&c==8) isFunc=true;
+        
+        if (!isFunc && (r+c)%2==0) masked[r][c]^=1;
+      }
+    }
+    return {matrix:masked, size:size};
+  }
+  
+  function draw(canvasId, text) {
+    var result = generateMatrix(text);
+    var canvas = document.getElementById(canvasId);
+    var size = result.size;
+    var quiet = 3;
+    var pixel = Math.floor((canvas.width) / (size + quiet*2));
+    canvas.width = canvas.height = (size + quiet*2) * pixel;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#000000';
+    for (var r=0;r<size;r++) for (var c=0;c<size;c++) {
+      if (result.matrix[r][c]==1) {
+        ctx.fillRect((c+quiet)*pixel,(r+quiet)*pixel,pixel,pixel);
+      }
+    }
+  }
+  
+  return {draw:draw};
+})();
+
+window.onload = function() {
+  QRGen.draw('qr', 'https://mcmate93-boop.github.io/Villgrid/index.html');
+};
 </script>
 </body>
 </html>
