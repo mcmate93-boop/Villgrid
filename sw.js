@@ -1,4 +1,4 @@
-const VERSION = 'villgrid-v3';
+const VERSION = 'villgrid-v4';
 const STATIC = [
   '/Villgrid/',
   '/Villgrid/index.html',
