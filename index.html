@@ -113,7 +113,28 @@ body{display:flex;flex-direction:column;}
     <button id="sh-x" onclick="cls()">✕</button>
   </div>
   <div id="sh-body"></div>
-  <button id="sh-nav" onclick="nav()">📍 Navigálás Google Maps-ben</button>
+
+  <!-- MEGJEGYZÉSEK -->
+  <div style="padding:0 14px 6px;flex-shrink:0;">
+    <div style="font-size:10px;color:#f5a623;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Megjegyzések</div>
+    <div id="meg-lista" style="margin-bottom:8px;"></div>
+
+    <div id="meg-form" style="display:none;flex-direction:column;gap:8px;margin-bottom:8px;">
+      <input id="meg-nev" type="text" placeholder="Neved..." autocomplete="off" style="background:rgba(255,255,255,0.06);border:1px solid #1e2d4a;border-radius:8px;padding:9px 12px;color:#fff;font-size:14px;outline:none;width:100%;">
+      <textarea id="meg-szoveg" placeholder="Megjegyzés (pl. kapukód, bejárat helye...)" style="background:rgba(255,255,255,0.06);border:1px solid #1e2d4a;border-radius:8px;padding:9px 12px;color:#fff;font-size:14px;outline:none;width:100%;resize:none;height:72px;font-family:inherit;"></textarea>
+      <div style="display:flex;gap:8px;">
+        <button onclick="megMent()" style="flex:1;padding:10px;background:#f5a623;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;">Mentés</button>
+        <button onclick="megMegse()" style="flex:1;padding:10px;background:rgba(255,255,255,0.06);color:#c8d8f0;border:1px solid #1e2d4a;border-radius:8px;font-size:13px;cursor:pointer;">Mégse</button>
+      </div>
+    </div>
+
+    <button id="meg-btn" onclick="megUj()" style="width:100%;padding:10px;background:rgba(245,166,35,0.1);border:1px dashed rgba(245,166,35,0.4);border-radius:8px;color:#f5a623;font-size:13px;font-weight:700;cursor:pointer;">+ Megjegyzés hozzáadása</button>
+  </div>
+
+  <div style="padding:10px 14px 20px;display:flex;gap:8px;flex-shrink:0;">
+    <button onclick="nav()" style="flex:1;padding:12px;background:#f5a623;color:#000;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;">📍 Navigálás</button>
+    <button onclick="cls()" style="flex:1;padding:12px;background:rgba(255,255,255,0.06);color:#c8d8f0;border:1px solid #1e2d4a;border-radius:10px;font-size:13px;cursor:pointer;">Bezárás</button>
+  </div>
 </div>
 
 <script>
@@ -299,12 +320,88 @@ function showDetail(o){
   if(o[6]) h+=dr('EOV Y',o[6]);
   h+=dr('GPS','<span style="font-size:11px;font-family:monospace">'+o[1]+', '+o[2]+'</span>');
   document.getElementById('sh-body').innerHTML=h;
+  document.getElementById('meg-lista').innerHTML='';
+  document.getElementById('meg-form').style.display='none';
+  document.getElementById('meg-btn').style.display='block';
   document.getElementById('sh').classList.add('on');
+  betoltMegjegyzesek(o[0]);
 }
 
 function dr(k,v){return '<div class="dr"><span class="dk">'+k+'</span><span class="dv">'+v+'</span></div>';}
 function cls(){document.getElementById('sh').classList.remove('on');cur=null;}
 function nav(){if(!cur)return;window.open('https://www.google.com/maps/dir/?api=1&destination='+cur[1]+','+cur[2],'_blank');}
+
+// ===== FIREBASE MEGJEGYZÉSEK =====
+var FB_URL = 'https://villgrid-da1f8-default-rtdb.europe-west1.firebasedatabase.app/megjegyzesek';
+
+function fbGet(aid, cb) {
+  fetch(FB_URL+'/'+aid.replace(/[^a-zA-Z0-9]/g,'_')+'.json')
+    .then(function(r){return r.json();})
+    .then(function(d){cb(d);})
+    .catch(function(){cb(null);});
+}
+
+function fbPost(aid, adat, cb) {
+  fetch(FB_URL+'/'+aid.replace(/[^a-zA-Z0-9]/g,'_')+'.json', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(adat)
+  }).then(function(){cb&&cb();}).catch(function(){cb&&cb();});
+}
+
+function betoltMegjegyzesek(aid) {
+  var lista = document.getElementById('meg-lista');
+  lista.innerHTML = '<div style="font-size:11px;color:#4a6080;padding:4px 0;">Betöltés...</div>';
+  fbGet(aid, function(d) {
+    lista.innerHTML = '';
+    if (!d) {
+      lista.innerHTML = '<div style="font-size:11px;color:#4a6080;padding:4px 0;">Még nincs megjegyzés.</div>';
+      return;
+    }
+    var keys = Object.keys(d);
+    if (keys.length === 0) {
+      lista.innerHTML = '<div style="font-size:11px;color:#4a6080;padding:4px 0;">Még nincs megjegyzés.</div>';
+      return;
+    }
+    // Legújabb elöl
+    keys.sort(function(a,b){ return (d[b].ts||0)-(d[a].ts||0); });
+    keys.forEach(function(k) {
+      var m = d[k];
+      var div = document.createElement('div');
+      div.style.cssText = 'background:rgba(255,255,255,0.04);border-radius:8px;padding:9px 11px;margin-bottom:7px;border-left:3px solid #f5a623;';
+      var datum = m.ts ? new Date(m.ts).toLocaleString('hu-HU',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+      div.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">'+
+          '<span style="font-size:12px;font-weight:700;color:#fff;">'+m.nev+'</span>'+
+          '<span style="font-size:10px;color:#4a6080;">'+datum+'</span>'+
+        '</div>'+
+        '<div style="font-size:12px;color:#c8d8f0;line-height:1.5;">'+m.szoveg+'</div>';
+      lista.appendChild(div);
+    });
+  });
+}
+
+function megUj() {
+  document.getElementById('meg-form').style.display='flex';
+  document.getElementById('meg-btn').style.display='none';
+}
+function megMegse() {
+  document.getElementById('meg-form').style.display='none';
+  document.getElementById('meg-btn').style.display='block';
+}
+function megMent() {
+  var nev = document.getElementById('meg-nev').value.trim();
+  var szoveg = document.getElementById('meg-szoveg').value.trim();
+  if (!nev || !szoveg) { alert('Kérlek töltsd ki mindkét mezőt!'); return; }
+  if (!cur) return;
+  var adat = { nev:nev, szoveg:szoveg, ts:Date.now() };
+  fbPost(cur[0], adat, function() {
+    document.getElementById('meg-nev').value = '';
+    document.getElementById('meg-szoveg').value = '';
+    megMegse();
+    betoltMegjegyzesek(cur[0]);
+  });
+}
 
 var ty=0;
 document.getElementById('sh').addEventListener('touchstart',function(e){ty=e.touches[0].clientY;},{passive:true});
