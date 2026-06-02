@@ -66,6 +66,9 @@ body{display:flex;flex-direction:column;}
 .pi{font-size:14px;font-weight:800;color:#fff;}
 .ps{font-size:11px;color:#4a6080;margin-top:2px;}
 
+#tabbar{display:flex;gap:0;background:#0f1628;border-bottom:1px solid #1e2d4a;flex-shrink:0;}
+.tab{flex:1;padding:10px;border:none;background:none;color:#4a6080;font-size:14px;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;-webkit-tap-highlight-color:transparent;}
+.tab.aktiv{color:#f5a623;border-bottom-color:#f5a623;}
 #loader{position:fixed;inset:0;background:#0a0e1a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;}
 #loader h2{color:#f5a623;font-size:22px;font-weight:900;margin-bottom:16px;}
 #lbar{width:200px;height:6px;background:#1e2d4a;border-radius:3px;overflow:hidden;}
@@ -85,7 +88,7 @@ body{display:flex;flex-direction:column;}
   <h1>⚡ Vill<span>Grid</span></h1>
   <div id="status">Betöltés...</div>
   <div class="sr">
-    <input id="si" type="search" placeholder="Azonosító, pl. 10337" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
+    <input id="si" type="search" id="si" type="search" placeholder="Azonosító, pl. 10337" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
     <button id="sb" onclick="go()" disabled>Keres</button>
   </div>
   <div id="info"></div>
@@ -164,6 +167,26 @@ map = L.map('map',{center:[47.16,19.5],zoom:7});
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
 ml = L.layerGroup().addTo(map);
 
+var DOK = null;
+var aktifTab = 'trafo';
+
+function setTab(tab, el) {
+  aktifTab = tab;
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('aktiv');});
+  el.classList.add('aktiv');
+  filt = null;
+  document.getElementById('si').value = '';
+  document.getElementById('info').textContent = '';
+  if (tab === 'trafo') {
+    document.getElementById('si').placeholder = 'Azonosító, pl. 10337';
+    document.getElementById('status').textContent = D ? D.length.toLocaleString('hu')+' db transzformátor' : 'Betöltés...';
+  } else {
+    document.getElementById('si').placeholder = 'OK szám, pl. 49604';
+    document.getElementById('status').textContent = DOK ? DOK.length.toLocaleString('hu')+' db oszlopkapcsoló' : 'Betöltés...';
+  }
+  draw();
+}
+
 function loadData() {
   document.getElementById('lmsg').textContent = 'Adatok letöltése...';
   document.getElementById('lfill').style.width = '30%';
@@ -182,10 +205,22 @@ function loadData() {
 
 function init() {
   document.getElementById('lfill').style.width = '100%';
-  document.getElementById('status').textContent = D.length.toLocaleString('hu') + ' db transzformátor betöltve';
+  document.getElementById('status').textContent = D.length.toLocaleString('hu') + ' db transzformátor';
   document.getElementById('si').disabled = false;
   document.getElementById('sb').disabled = false;
   document.getElementById('loader').style.display = 'none';
+  // data_ok.js betöltése
+  if (!DOK) {
+    var s2 = document.createElement('script');
+    s2.src = 'data_ok.js';
+    s2.onload = function() {
+      if (aktifTab==='ok') {
+        document.getElementById('status').textContent = DOK.length.toLocaleString('hu')+' db oszlopkapcsoló';
+        draw();
+      }
+    };
+    document.head.appendChild(s2);
+  }
   map.on('moveend zoomend', draw);
   draw();
   document.getElementById('si').addEventListener('keydown',function(e){
@@ -194,9 +229,10 @@ function init() {
 }
 
 function draw(){
-  if(!D) return;
+  var activeData = aktifTab==='trafo' ? D : DOK;
+  if(!activeData) return;
   var b=map.getBounds();
-  var src=filt||D;
+  var src=filt||activeData;
   var vis=[],LIMIT=400;
   for(var i=0;i<src.length&&vis.length<LIMIT;i++){
     var o=src[i];
@@ -208,8 +244,12 @@ function draw(){
 }
 
 function mkr(o,s){
+  var isOK = aktifTab==='ok';
+  var col = isOK ? '#00bcd4' : '#f5a623';
+  var bg = isOK ? '#00bcd415' : '#f5a62315';
+  var em = isOK ? '🔌' : '⚡';
   var ic=L.divIcon({className:'',
-    html:'<div style="width:'+s+'px;height:'+s+'px;background:#f5a62315;border:2px solid #f5a623;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:'+(s*.5)+'px;">⚡</div>',
+    html:'<div style="width:'+s+'px;height:'+s+'px;background:'+bg+';border:2px solid '+col+';border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:'+(s*.5)+'px;">'+em+'</div>',
     iconSize:[s,s],iconAnchor:[s/2,s/2]});
   var m=L.marker([o[1],o[2]],{icon:ic})
     .bindPopup('<div class="pi">'+o[0]+'</div><div class="ps">'+o[3]+'</div>',{maxWidth:200})
@@ -218,10 +258,10 @@ function mkr(o,s){
 }
 
 function handleMarkerClick(aid) {
-  // Megkeressük az összes egyező azonosítót
+  var activeData = aktifTab==='trafo' ? D : DOK;
   var matches = [];
-  for(var i=0;i<D.length;i++){
-    if(D[i][0]===aid) matches.push(D[i]);
+  for(var i=0;i<activeData.length;i++){
+    if(activeData[i][0]===aid) matches.push(activeData[i]);
   }
   if(matches.length===1){
     showDetail(matches[0]);
@@ -231,14 +271,15 @@ function handleMarkerClick(aid) {
 }
 
 function go(){
-  if(!D) return;
+  var activeData = aktifTab==='trafo' ? D : DOK;
+  if(!activeData) return;
   var q=document.getElementById('si').value.replace(/\s/g,'').toLowerCase();
   var inf=document.getElementById('info');
   if(!q){filt=null;draw();inf.textContent='';return;}
 
   var r=[];
-  for(var i=0;i<D.length;i++){
-    var o=D[i];
+  for(var i=0;i<activeData.length;i++){
+    var o=activeData[i];
     if(o[0].toLowerCase().indexOf(q)>=0||o[3].toLowerCase().replace(/\s/g,'').indexOf(q)>=0) r.push(o);
   }
 
@@ -303,7 +344,7 @@ function pickDup(idx) {
   var o = window._dupMatches[idx];
   closeDup();
   map.setView([o[1],o[2]],16);
-  showDetail(o);
+  if(aktifTab==='trafo'){showDetail(o);}else{showDetail(o);}
 }
 
 function closeDup(){
@@ -314,10 +355,19 @@ function showDetail(o){
   cur=o;
   document.getElementById('sh-id').textContent=o[0];
   var h='';
-  if(o[3]) h+=dr('Cím',o[3]);
-  if(o[4]) h+=dr('Megye',o[4]);
-  if(o[5]) h+=dr('EOV X',o[5]);
-  if(o[6]) h+=dr('EOV Y',o[6]);
+  if(aktifTab==='trafo'){
+    if(o[3]) h+=dr('Cím',o[3]);
+    if(o[4]) h+=dr('Megye',o[4]);
+    if(o[5]) h+=dr('EOV X',o[5]);
+    if(o[6]) h+=dr('EOV Y',o[6]);
+  } else {
+    if(o[3]) h+=dr('Település',o[3]);
+    if(o[4]) h+=dr('Típus',o[4]);
+    if(o[5]) h+=dr('Állapot','<span style="color:'+(o[5]==='bekapcsolt'?'#00e676':'#ff1744')+'">'+o[5]+'</span>');
+    if(o[6]) h+=dr('Feszültség',o[6]);
+    if(o[7]) h+=dr('EOV X',o[7]);
+    if(o[8]) h+=dr('EOV Y',o[8]);
+  }
   h+=dr('GPS','<span style="font-size:11px;font-family:monospace">'+o[1]+', '+o[2]+'</span>');
   document.getElementById('sh-body').innerHTML=h;
   document.getElementById('meg-lista').innerHTML='';

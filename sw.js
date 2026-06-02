@@ -1,8 +1,9 @@
-const VERSION = 'villgrid-v4';
+const VERSION = 'villgrid-v5';
 const STATIC = [
   '/Villgrid/',
   '/Villgrid/index.html',
   '/Villgrid/data.js',
+  '/Villgrid/data_ok.js',
   '/Villgrid/manifest.json',
   '/Villgrid/icon-192.png',
   '/Villgrid/icon-512.png',
@@ -49,8 +50,8 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // data.js: network-first (mindig a legfrissebbet próbálja), fallback cache
-  if (url.pathname.includes('data.js')) {
+  // data.js és data_ok.js: network-first, fallback cache
+  if (url.pathname.includes('data.js') || url.pathname.includes('data_ok.js')) {
     e.respondWith(
       fetch(e.request)
         .then(res => {
