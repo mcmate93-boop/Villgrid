@@ -296,18 +296,18 @@ function go(){
 
   // Pontos egyezés keresése (egy azonosítóra)
   var exactMatches=[];
-  for(var k=0;k<D.length;k++){
-    if(D[k][0].toLowerCase()===q) exactMatches.push(D[k]);
+  for(var k=0;k<activeData.length;k++){
+    if(activeData[k][0].toLowerCase()===q) exactMatches.push(activeData[k]);
   }
 
   if(exactMatches.length===1){
     inf.textContent='"'+q+'" → 1 találat';
     map.setView([exactMatches[0][1],exactMatches[0][2]],16);
     showDetail(exactMatches[0]);
+    setTimeout(function(){if(mm[exactMatches[0][0]])mm[exactMatches[0][0]].openPopup();},300);
   } else if(exactMatches.length>1){
-    inf.textContent='"'+q+'" → '+exactMatches.length+' azonos azonosítójú transzformátor';
+    inf.textContent='"'+q+'" → '+exactMatches.length+' azonos azonosítójú találat';
     showDupSheet(exactMatches);
-    // Térképen is mutassuk mind
     var g=L.featureGroup(Object.values(mm));
     if(g.getLayers().length) map.fitBounds(g.getBounds().pad(0.3));
   } else if(r.length>0){
