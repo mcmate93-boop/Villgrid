@@ -88,11 +88,17 @@ body{display:flex;flex-direction:column;}
   <h1>⚡ Vill<span>Grid</span></h1>
   <div id="status">Betöltés...</div>
   <div class="sr">
-    <input id="si" type="search" id="si" type="search" placeholder="Azonosító, pl. 10337" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
+    <input id="si" type="search" placeholder="Azonosító, pl. 10337" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
     <button id="sb" onclick="go()" disabled>Keres</button>
   </div>
   <div id="info"></div>
 </div>
+
+<div id="tabbar">
+  <button class="tab aktiv" onclick="setTab('trafo',this)">⚡ Transzformátorok</button>
+  <button class="tab" onclick="setTab('ok',this)">🔌 Oszlopkapcsolók</button>
+</div>
+
 <div id="map"></div>
 
 <!-- DUPLIKÁLT VÁLASZTÓ -->
